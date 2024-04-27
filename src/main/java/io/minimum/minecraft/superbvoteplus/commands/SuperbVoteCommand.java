@@ -15,16 +15,19 @@ import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Level;
 
-public class SuperbVoteCommand implements CommandExecutor {
+public class SuperbVoteCommand implements TabExecutor {
     public static final String FAKE_HOST_NAME_FOR_VOTE = UUID.randomUUID().toString();
     private final Map<String, ConfirmingCommand> wantToClear = new HashMap<>();
 
@@ -315,6 +318,29 @@ public class SuperbVoteCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if(strings.length == 1){
+            return StringUtil.copyPartialMatches(strings[0], Arrays.asList("votes", "top", "pastetop", "fakevote", "reload", "clear", "migrate"), new ArrayList<>());
+        }
+        if(strings.length == 2){
+            switch (strings[0]){
+                case "votes": return null;
+                case "top": return StringUtil.copyPartialMatches(strings[1], Arrays.asList("[page]"), new ArrayList<>());
+                case "pastetop": return StringUtil.copyPartialMatches(strings[1], Arrays.asList("[amount]"), new ArrayList<>());
+                case "fakevote": return null;
+                case "migrate": return StringUtil.copyPartialMatches(strings[1], Arrays.asList("[source]"), new ArrayList<>());
+            }
+        }
+        if(strings.length == 3){
+            switch (strings[0]){
+                case "fakevote": return StringUtil.copyPartialMatches(strings[1], Arrays.asList("[service]"), new ArrayList<>());
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Data
