@@ -1,5 +1,6 @@
 package io.minimum.minecraft.superbvoteplus;
 
+import io.minimum.minecraft.superbvoteplus.commands.RewardCommand;
 import io.minimum.minecraft.superbvoteplus.commands.SuperbVoteCommand;
 import io.minimum.minecraft.superbvoteplus.configuration.SuperbVoteConfiguration;
 import io.minimum.minecraft.superbvoteplus.scoreboard.ScoreboardHandler;
@@ -12,7 +13,7 @@ import io.minimum.minecraft.superbvoteplus.storage.VoteStorage;
 import io.minimum.minecraft.superbvoteplus.util.BrokenNag;
 import io.minimum.minecraft.superbvoteplus.util.SpigotUpdater;
 import io.minimum.minecraft.superbvoteplus.util.cooldowns.VoteServiceCooldown;
-import io.minimum.minecraft.superbvoteplus.votes.SuperbVoteListener;
+import io.minimum.minecraft.superbvoteplus.votes.VoteProcessor;
 import io.minimum.minecraft.superbvoteplus.votes.VoteReminder;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -74,22 +75,25 @@ public class SuperbVotePlus extends JavaPlugin {
             throw new RuntimeException("Exception whilst loading top player signs", e);
         }
 
-        getCommand("superbvote").setExecutor(new SuperbVoteCommand());
+        getCommand("superbvoteplus").setExecutor(new SuperbVoteCommand());
         getCommand("vote").setExecutor(configuration.getVoteCommand());
         getCommand("votestreak").setExecutor(configuration.getVoteStreakCommand());
+        getCommand("reward").setExecutor(new RewardCommand());
 
-        getServer().getPluginManager().registerEvents(new SuperbVoteListener(), this);
+        getServer().getPluginManager().registerEvents(new VoteProcessor(), this);
         getServer().getPluginManager().registerEvents(new TopPlayerSignListener(), this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, voteStorage::save, 20, 20 * 30);
         getServer().getScheduler().runTaskTimerAsynchronously(this, queuedVotes::save, 20, 20 * 30);
         getServer().getScheduler().runTaskAsynchronously(this, SuperbVotePlus.getPlugin().getScoreboardHandler()::doPopulate);
         getServer().getScheduler().runTaskAsynchronously(this, new TopPlayerSignFetcher(topPlayerSignStorage.getSignList()));
 
-        int r = getConfig().getInt("vote-reminder.repeat");
-        String text = getConfig().getString("vote-reminder.message");
-        if (text != null && !text.isEmpty()) {
-            if (r > 0) {
-                voteReminderTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new VoteReminder(), 20 * r, 20 * r);
+        if(getConfig().getBoolean("vote-reminder.repeat.enabled")){
+            int r = getConfig().getInt("vote-reminder.repeat.seconds");
+            String text = getConfig().getString("vote-reminder.message");
+            if (text != null && !text.isEmpty()) {
+                if (r > 0) {
+                    voteReminderTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new VoteReminder(), 20 * r, 20 * r);
+                }
             }
         }
 
@@ -131,10 +135,12 @@ public class SuperbVotePlus extends JavaPlugin {
             voteReminderTask.cancel();
             voteReminderTask = null;
         }
-        int r = getConfig().getInt("vote-reminder.repeat");
-        String text = getConfig().getString("vote-reminder.message");
-        if (text != null && !text.isEmpty() && r > 0) {
-            voteReminderTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new VoteReminder(), 20 * r, 20 * r);
+        if(getConfig().getBoolean("vote-reminder.repeat.enabled")){
+            int r = getConfig().getInt("vote-reminder.repeat.time");
+            String text = getConfig().getString("vote-reminder.message");
+            if (text != null && !text.isEmpty() && r > 0) {
+                voteReminderTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new VoteReminder(), 20 * r, 20 * r);
+            }
         }
     }
 

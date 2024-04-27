@@ -1,5 +1,5 @@
 name: SuperbVotePlus
-main: io.minimum.minecraft.superbvote.SuperbVotePlus
+main: io.minimum.minecraft.superbvoteplus.SuperbVotePlus
 authors: [tuxed, Tig3r98]
 version: ${project.version}
 depend: [Votifier]
@@ -14,6 +14,8 @@ commands:
   votestreak:
     description: SuperbVotePlus vote streak command.
     aliases: [vstreak]
+  reward:
+    description: SuperbVotePlus reward command.
 permissions:
   superbvote.notify:
     default: true

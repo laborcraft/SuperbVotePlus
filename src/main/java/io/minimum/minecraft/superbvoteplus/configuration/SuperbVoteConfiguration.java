@@ -166,8 +166,8 @@ public class SuperbVoteConfiguration {
         return configuration.getBoolean("require-online", false);
     }
 
-    public boolean shouldQueueVotes() {
-        return configuration.getBoolean("queue-votes", true);
+    public boolean shouldGiveAutomatically() {
+        return configuration.getBoolean("give-automatically", true);
     }
 
     public static String replaceCommandPlaceholders(String text, Vote vote) {

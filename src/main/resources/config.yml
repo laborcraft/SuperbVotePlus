@@ -1,7 +1,7 @@
 # SuperbVotePlus configuration
-# A superb vote plugin made by Tux.
+# A superb vote plugin made by Tux. Expanded by Tig3r98.
 #
-# https://github.com/minecrafter/SuperbVote/wiki
+# https://github.com/Laborcraft/SuperbVotePlus/wiki
 
 # Database configuration.
 storage:
@@ -71,9 +71,9 @@ rewards:
 # Whether or not players need to be online to vote. If set, offline player votes are queued for when the player next logs in.
 require-online: true
 
-# Whether we should queue votes if players aren't online. Requires the above option to be set to true.
-# If this is disabled, the user won't get any rewards if they aren't online, even if they login afterwards.
-queue-votes: true
+# Whether we should give players their rewards as soon as possible (when they join or instantly if online).
+# If this is disabled, the player will need to use /reward to get it.
+give-automatically: false
 
 # Broadcast settings:
 broadcast:
@@ -102,11 +102,20 @@ vote-command:
   text: |-
     You could vote for us, but the owner forgot to add the list of websites to vote at!
 
+reward-command:
+  enabled: false #todo not used
+  msg:
+    no-rewards: "&cYou don't have rewards to redeem!"
+
 # Vote reminder.
 vote-reminder:
   message: "&cDon't forget to vote for us! You currently have &a%votes%&c votes."
-  on-join: true
-  repeat: 180
+  on-join:
+    enabled: true
+    tick-delay: 5
+  repeat:
+    enabled: false
+    seconds: 3600
 
 # Controls the /sv <top/leaderboard> command.
 leaderboard:
