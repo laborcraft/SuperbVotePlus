@@ -28,7 +28,7 @@ public class VoteReminder implements Runnable {
                 Player player = Bukkit.getPlayer(pv.getUuid());
                 if (player != null) {
                     MessageContext context = new MessageContext(null, pv, voteStreak, player);
-                    SuperbVotePlus.getPlugin().getConfiguration().getReminderMessage().sendAsReminder(player, context);
+                    SuperbVotePlus.getPlugin().getConfiguration().getLang().getReminderMessage().sendAsReminder(player, context);
                 }
             }
         } else {
@@ -37,7 +37,7 @@ public class VoteReminder implements Runnable {
                 Player player = Bukkit.getPlayer(pv.getUuid());
                 if (player != null) {
                     MessageContext context = new MessageContext(null, pv, null, player);
-                    SuperbVotePlus.getPlugin().getConfiguration().getReminderMessage().sendAsReminder(player, context);
+                    SuperbVotePlus.getPlugin().getConfiguration().getLang().getReminderMessage().sendAsReminder(player, context);
                 }
             }
         }

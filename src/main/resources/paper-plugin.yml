@@ -1,0 +1,16 @@
+name: SuperbVotePlus
+version: ${project.version}
+main: io.minimum.minecraft.superbvoteplus.SuperbVotePlus
+description: Paper Test Plugin
+api-version: '1.19'
+authors: [tuxed, Tig3r98]
+dependencies:
+  server:
+    Votifier:
+      load: AFTER
+      required: true
+      join-classpath: true
+    PlaceholderAPI:
+      load: AFTER
+      required: false
+      join-classpath: true

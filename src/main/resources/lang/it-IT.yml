@@ -1,0 +1,15 @@
+# Map command names to custom names
+command-names:
+  superbvoteplus: svp
+  vote: vota
+  votestreak: serievoti
+  reward: premio
+
+commands:
+  vote: "Supporta il server votandoci!"
+  streak: "Attualmete hai una serie voti di %streak% (%streak_days% giorni), continua così!
+  Hai votato su %streak_today_services% lista/e di X oggi."
+
+messages:
+  vote-reminder: "<green>Ricordati di votarci! Attualmnente hai votato &a%votes%&c volte."
+  no-rewards: "<red>Non hai ricompense da ritirare!"

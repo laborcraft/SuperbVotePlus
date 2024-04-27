@@ -2,7 +2,7 @@ package io.minimum.minecraft.superbvoteplus;
 
 import io.minimum.minecraft.superbvoteplus.commands.RewardCommand;
 import io.minimum.minecraft.superbvoteplus.commands.SuperbVoteCommand;
-import io.minimum.minecraft.superbvoteplus.configuration.SuperbVoteConfiguration;
+import io.minimum.minecraft.superbvoteplus.configuration.MainConfiguration;
 import io.minimum.minecraft.superbvoteplus.scoreboard.ScoreboardHandler;
 import io.minimum.minecraft.superbvoteplus.signboard.TopPlayerSignFetcher;
 import io.minimum.minecraft.superbvoteplus.signboard.TopPlayerSignListener;
@@ -16,17 +16,27 @@ import io.minimum.minecraft.superbvoteplus.util.cooldowns.VoteServiceCooldown;
 import io.minimum.minecraft.superbvoteplus.votes.VoteProcessor;
 import io.minimum.minecraft.superbvoteplus.votes.VoteReminder;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SuperbVotePlus extends JavaPlugin {
     @Getter
     private static SuperbVotePlus plugin;
     @Getter
-    private SuperbVoteConfiguration configuration;
+    private MainConfiguration configuration;
     @Getter
     private VoteStorage voteStorage;
     @Getter
@@ -45,11 +55,7 @@ public class SuperbVotePlus extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
-        configuration = new SuperbVoteConfiguration(getConfig());
-
-        if (configuration.isConfigurationError()) {
-            BrokenNag.nag(getServer().getConsoleSender());
-        }
+        reloadPlugin();
 
         try {
             voteStorage = configuration.initializeVoteStorage();
@@ -65,9 +71,6 @@ public class SuperbVotePlus extends JavaPlugin {
 
         recentVotesStorage = new RecentVotesStorage();
 
-        scoreboardHandler = new ScoreboardHandler();
-        voteServiceCooldown = new VoteServiceCooldown(getConfig().getInt("votes.cooldown-per-service", 3600));
-
         topPlayerSignStorage = new TopPlayerSignStorage();
         try {
             topPlayerSignStorage.load(new File(getDataFolder(), "top_voter_signs.json"));
@@ -75,27 +78,12 @@ public class SuperbVotePlus extends JavaPlugin {
             throw new RuntimeException("Exception whilst loading top player signs", e);
         }
 
-        getCommand("superbvoteplus").setExecutor(new SuperbVoteCommand());
-        getCommand("vote").setExecutor(configuration.getVoteCommand());
-        getCommand("votestreak").setExecutor(configuration.getVoteStreakCommand());
-        getCommand("reward").setExecutor(new RewardCommand());
-
         getServer().getPluginManager().registerEvents(new VoteProcessor(), this);
         getServer().getPluginManager().registerEvents(new TopPlayerSignListener(), this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, voteStorage::save, 20, 20 * 30);
         getServer().getScheduler().runTaskTimerAsynchronously(this, queuedVotes::save, 20, 20 * 30);
         getServer().getScheduler().runTaskAsynchronously(this, SuperbVotePlus.getPlugin().getScoreboardHandler()::doPopulate);
         getServer().getScheduler().runTaskAsynchronously(this, new TopPlayerSignFetcher(topPlayerSignStorage.getSignList()));
-
-        if(getConfig().getBoolean("vote-reminder.repeat.enabled")){
-            int r = getConfig().getInt("vote-reminder.repeat.seconds");
-            String text = getConfig().getString("vote-reminder.message");
-            if (text != null && !text.isEmpty()) {
-                if (r > 0) {
-                    voteReminderTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new VoteReminder(), 20 * r, 20 * r);
-                }
-            }
-        }
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("Using clip's PlaceholderAPI to provide extra placeholders.");
@@ -123,13 +111,26 @@ public class SuperbVotePlus extends JavaPlugin {
     }
 
     public void reloadPlugin() {
+        saveDefaultConfig();
         reloadConfig();
-        configuration = new SuperbVoteConfiguration(getConfig());
-        scoreboardHandler.reload();
+        configuration = new MainConfiguration(getConfig());
+        if (configuration.isConfigurationError()) {
+            BrokenNag.nag(getServer().getConsoleSender());
+        }
+
+        if(scoreboardHandler == null){
+            scoreboardHandler = new ScoreboardHandler();
+        } else {
+            scoreboardHandler.reload();
+        }
         voteServiceCooldown = new VoteServiceCooldown(getConfig().getInt("votes.cooldown-per-service", 3600));
         getServer().getScheduler().runTaskAsynchronously(this, getScoreboardHandler()::doPopulate);
-        getCommand("vote").setExecutor(configuration.getVoteCommand());
-        getCommand("votestreak").setExecutor(configuration.getVoteStreakCommand());
+
+        String namespace = getName();
+        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("superbvoteplus"), new SuperbVoteCommand()));
+        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("vote"), configuration.getLang().getVoteCommand()));
+        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("votestreak"), configuration.getLang().getVoteStreakCommand()));
+        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("reward"), new RewardCommand()));
 
         if (voteReminderTask != null) {
             voteReminderTask.cancel();
@@ -146,5 +147,28 @@ public class SuperbVotePlus extends JavaPlugin {
 
     public ClassLoader _exposeClassLoader() {
         return getClassLoader();
+    }
+
+    private Command getCommand(String name, TabExecutor executor) {
+        return new Command(name) {
+            @Override
+            public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+                return executor.onCommand(sender, this, commandLabel, args);
+            }
+            @NotNull
+            public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+                List<String> returnValue = executor.onTabComplete(sender, this, name, args);
+                if(returnValue != null)
+                    return returnValue;
+                return StringUtil.copyPartialMatches(
+                        args[args.length-1],
+                        Bukkit.getOnlinePlayers()
+                                .stream()
+                                .map(Player::getName)
+                                .collect(Collectors.toList()),
+                        new ArrayList<>()
+                );
+            }
+        };
     }
 }

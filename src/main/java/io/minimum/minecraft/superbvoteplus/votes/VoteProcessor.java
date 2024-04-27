@@ -107,7 +107,7 @@ public class VoteProcessor implements Listener {
                 MessageContext context = new MessageContext(null, pv, voteStreak, player);
                 Bukkit.getScheduler().runTaskLater(
                         SuperbVotePlus.getPlugin(),
-                        ()->SuperbVotePlus.getPlugin().getConfiguration().getReminderMessage().sendAsReminder(player, context),
+                        ()->SuperbVotePlus.getPlugin().getConfiguration().getLang().getReminderMessage().sendAsReminder(player, context),
                         SuperbVotePlus.getPlugin().getConfig().getLong("vote-reminder.on-join.tick-delay")
                 );
             }

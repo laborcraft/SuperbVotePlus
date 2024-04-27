@@ -1,6 +1,6 @@
 package io.minimum.minecraft.superbvoteplus.votes.rewards;
 
-import io.minimum.minecraft.superbvoteplus.configuration.SuperbVoteConfiguration;
+import io.minimum.minecraft.superbvoteplus.configuration.MainConfiguration;
 import io.minimum.minecraft.superbvoteplus.configuration.message.MessageContext;
 import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessage;
 import io.minimum.minecraft.superbvoteplus.votes.Vote;
@@ -34,7 +34,7 @@ public class VoteReward {
 
     public void runCommands(Vote vote) {
         for (String command : commands) {
-            String fixed = SuperbVoteConfiguration.replaceCommandPlaceholders(command, vote);
+            String fixed = MainConfiguration.replaceCommandPlaceholders(command, vote);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), fixed);
         }
     }

@@ -17,6 +17,9 @@ storage:
     streaks-table: streaks
     read-only: false
 
+# Select the language.
+language: en-US
+
 # General vote configuration.
 votes:
   # At least this many seconds must pass before allowing another vote (per-service). This will apply per service.
@@ -41,10 +44,6 @@ streaks:
   command:
     # note: will be disabled if streaks are disabled
     enabled: true
-    use-json-text: false
-    text: |-
-      You currently hold a vote streak of %streak% (%streak_days% days), keep going!
-      You've voted on %streak_today_services% website(s) out of X today.
 
 # Rewards. This is the main section you will need to edit. Ordering is important.
 rewards:
@@ -93,6 +92,14 @@ broadcast:
     # How many seconds should be between broadcasts?
     time: 120
 
+# Map command names to custom names
+command-names:
+  superbvoteplus: svp
+  vote: vote
+  votestreak: votestreak
+  reward: reward
+
+
 # Vote command.
 # See http://www.minecraftforum.net/forums/minecraft-discussion/redstone-discussion-and/351959-1-9-json-text-component-for-tellraw-title-books
 # and https://www.minecraftjson.com for json text format
@@ -104,8 +111,6 @@ vote-command:
 
 reward-command:
   enabled: false #todo not used
-  msg:
-    no-rewards: "&cYou don't have rewards to redeem!"
 
 # Vote reminder.
 vote-reminder:

@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.pool.HikariPool;
 import io.minimum.minecraft.superbvoteplus.SuperbVotePlus;
-import io.minimum.minecraft.superbvoteplus.commands.CommonCommand;
 import io.minimum.minecraft.superbvoteplus.configuration.message.OfflineVoteMessages;
 import io.minimum.minecraft.superbvoteplus.configuration.message.PlainStringMessage;
 import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessage;
@@ -33,13 +32,13 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 @Getter
-public class SuperbVoteConfiguration {
+public class MainConfiguration {
     @Getter(AccessLevel.NONE)
     private final ConfigurationSection configuration;
 
+    private LangConfiguration lang;
+
     private final List<VoteReward> rewards = new ArrayList<>();
-    private final VoteMessage reminderMessage;
-    private final CommonCommand voteCommand, voteStreakCommand;
 
     private final TextLeaderboardConfiguration textLeaderboardConfiguration;
     private final TopPlayerSignsConfiguration topPlayerSignsConfiguration;
@@ -50,8 +49,16 @@ public class SuperbVoteConfiguration {
 
     private static final List<String> SUPPORTED_STORAGE = ImmutableList.of("json", "mysql");
 
-    public SuperbVoteConfiguration(ConfigurationSection section) {
+    public MainConfiguration(ConfigurationSection section) {
         this.configuration = section;
+
+        try {
+            lang = new LangConfiguration(configuration.getString("language"));
+        } catch (IllegalArgumentException e) {
+            SuperbVotePlus.getPlugin().getLogger().log(Level.SEVERE, "Unable to load your lang configuration.");
+            SuperbVotePlus.getPlugin().getLogger().severe("SuperbVotePlus will be disabled until your configuration is fixed.");
+            configurationError = true;
+        }
 
         try {
             section.getList("rewards").stream()
@@ -99,24 +106,7 @@ public class SuperbVoteConfiguration {
             configurationError = true;
         }
 
-        reminderMessage = VoteMessages.from(configuration, "vote-reminder.message");
-
-        if (configuration.getBoolean("vote-command.enabled")) {
-            boolean useJson = configuration.getBoolean("vote-command.use-json-text");
-            VoteMessage voteMessage = VoteMessages.from(configuration, "vote-command.text", false, useJson);
-            voteCommand = new CommonCommand(voteMessage, false);
-        } else {
-            voteCommand = null;
-        }
-
         streaksConfiguration = initializeStreaksConfiguration();
-        if (streaksConfiguration.isEnabled() && configuration.getBoolean("streaks.command.enabled")) {
-            boolean useJson = configuration.getBoolean("streaks.command.use-json-text");
-            VoteMessage voteStreakMessage = VoteMessages.from(configuration, "streaks.command.text", false, useJson);
-            voteStreakCommand = new CommonCommand(voteStreakMessage, true);
-        } else {
-            voteStreakCommand = null;
-        }
 
         textLeaderboardConfiguration = new TextLeaderboardConfiguration(
                 configuration.getInt("leaderboard.text.per-page", 10),
@@ -138,8 +128,8 @@ public class SuperbVoteConfiguration {
         String name = section.getName();
 
         List<String> commands = section.getStringList("commands");
-        VoteMessage broadcast = VoteMessages.from(section, "broadcast-message", true, false);
-        VoteMessage playerMessage = VoteMessages.from(section, "player-message", true, false);
+        VoteMessage broadcast = VoteMessages.from(section, "broadcast-message", true);
+        VoteMessage playerMessage = VoteMessages.from(section, "player-message", true);
 
         List<RewardMatcher> rewards = RewardMatchers.getMatchers(section.getConfigurationSection("if"));
         boolean cascade = section.getBoolean("allow-cascading");
