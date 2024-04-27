@@ -1,18 +1,18 @@
-name: SuperbVote
-main: io.minimum.minecraft.superbvote.SuperbVote
-author: tuxed
+name: SuperbVotePlus
+main: io.minimum.minecraft.superbvote.SuperbVotePlus
+author: [tuxed, Tig3r98]
 version: ${project.version}
 depend: [Votifier]
 softdepend: [Vault, PlaceholderAPI]
 api-version: "1.13"
 commands:
-  superbvote:
-    description: SuperbVote main command.
-    aliases: [sv]
+  superbvoteplus:
+    description: SuperbVotePlus main command.
+    aliases: [svp]
   vote:
-    description: SuperbVote vote command.
+    description: SuperbVotePlus vote command.
   votestreak:
-    description: SuperbVote vote streak command.
+    description: SuperbVotePlus vote streak command.
     aliases: [vstreak]
 permissions:
   superbvote.notify:
