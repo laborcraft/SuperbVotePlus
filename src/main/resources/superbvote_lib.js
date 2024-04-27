@@ -1,6 +1,6 @@
 // Defines a few functions to help create JS-based matchers.
 var server = Java.type('org.bukkit.Bukkit').getServer();
-var _SuperbVotePlugin = Java.type('io.minimum.minecraft.superbvote.SuperbVote');
+var _SuperbVotePlugin = Java.type('io.minimum.minecraft.superbvoteplus.SuperbVotePLus');
 
 // Assorted Bukkit helpers
 

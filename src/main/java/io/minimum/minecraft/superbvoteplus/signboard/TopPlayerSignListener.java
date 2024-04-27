@@ -41,7 +41,7 @@ public class TopPlayerSignListener implements Listener {
 
     private boolean doSignBreak(Player player, TopPlayerSign sign) {
         // A sign is being destroyed.
-        if (!player.hasPermission("superbvote.managesigns")) {
+        if (!player.hasPermission("superbvoteplus.managesigns")) {
             player.sendMessage(ChatColor.RED + "You can't destroy this sign.");
             return false;
         }
@@ -57,7 +57,7 @@ public class TopPlayerSignListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         if ((event.getBlockPlaced().getType() == Material.SKELETON_WALL_SKULL ||
                 event.getBlockPlaced().getType() == Material.SKELETON_SKULL) &&
-                        event.getPlayer().hasPermission("superbvote.managesigns")) {
+                        event.getPlayer().hasPermission("superbvoteplus.managesigns")) {
             Block down = event.getBlockPlaced().getRelative(BlockFace.DOWN);
             for (TopPlayerSign sign : SuperbVotePlus.getPlugin().getTopPlayerSignStorage().getSignList()) {
                 for (BlockFace face : TopPlayerSignUpdater.FACES) {
@@ -73,7 +73,7 @@ public class TopPlayerSignListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
         try {
-            if (event.getLine(0).startsWith("[topvoter]") && event.getPlayer().hasPermission("superbvote.managesigns")) {
+            if (event.getLine(0).startsWith("[topvoter]") && event.getPlayer().hasPermission("superbvoteplus.managesigns")) {
                 int p;
                 try {
                     p = Integer.parseInt(event.getLine(1).replaceAll("[^\\d]", ""));

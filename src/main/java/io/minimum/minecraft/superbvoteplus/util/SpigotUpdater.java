@@ -59,7 +59,7 @@ public class SpigotUpdater implements Runnable, Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         String myVersion = SuperbVotePlus.getPlugin().getDescription().getVersion();
-        if (newVersion != null && !newVersion.equals(myVersion) && e.getPlayer().hasPermission("superbvote.admin")) {
+        if (newVersion != null && !newVersion.equals(myVersion) && e.getPlayer().hasPermission("superbvoteplus.admin")) {
             Bukkit.getScheduler().runTaskLater(SuperbVotePlus.getPlugin(), () -> {
                 e.getPlayer().sendMessage("");
                 e.getPlayer().sendMessage(ChatColor.YELLOW + "A new version of SuperbVotePlus (" + newVersion + ") is available.");

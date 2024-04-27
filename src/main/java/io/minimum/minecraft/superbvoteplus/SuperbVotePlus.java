@@ -110,6 +110,11 @@ public class SuperbVotePlus extends JavaPlugin {
         }
     }
 
+    Command superbVotePlusCommand;
+    Command voteCommand;
+    Command voteStreakCommand;
+    Command rewardCommand;
+
     public void reloadPlugin() {
         saveDefaultConfig();
         reloadConfig();
@@ -127,10 +132,25 @@ public class SuperbVotePlus extends JavaPlugin {
         getServer().getScheduler().runTaskAsynchronously(this, getScoreboardHandler()::doPopulate);
 
         String namespace = getName();
-        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("superbvoteplus"), new SuperbVoteCommand()));
-        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("vote"), configuration.getLang().getVoteCommand()));
-        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("votestreak"), configuration.getLang().getVoteStreakCommand()));
-        Bukkit.getCommandMap().register(namespace, getCommand(configuration.getLang().getCommandNames().get("reward"), new RewardCommand()));
+
+        //register commands
+
+        if(superbVotePlusCommand != null) superbVotePlusCommand.unregister(Bukkit.getCommandMap());
+        superbVotePlusCommand = getCommand(configuration.getLang().getCommandNames().get("superbvoteplus"), new SuperbVoteCommand());
+        Bukkit.getCommandMap().register(namespace, superbVotePlusCommand);
+
+        if(voteStreakCommand != null) voteStreakCommand.unregister(Bukkit.getCommandMap());
+        voteStreakCommand = getCommand(configuration.getLang().getCommandNames().get("votestreak"), configuration.getLang().getVoteStreakCommand());
+        if(getConfig().getBoolean("streaks.enabled") && getConfig().getBoolean("streaks.command.enabled")) Bukkit.getCommandMap().register(namespace, voteStreakCommand);
+
+        if(voteCommand != null) voteCommand.unregister(Bukkit.getCommandMap());
+        voteCommand = getCommand(configuration.getLang().getCommandNames().get("vote"), configuration.getLang().getVoteCommand());
+        if(getConfig().getBoolean("vote-command")) Bukkit.getCommandMap().register(namespace, voteCommand);
+
+        if(rewardCommand != null) rewardCommand.unregister(Bukkit.getCommandMap());
+        rewardCommand = getCommand(configuration.getLang().getCommandNames().get("reward"), new RewardCommand());
+        if(getConfig().getBoolean("reward-command")) Bukkit.getCommandMap().register(namespace, rewardCommand);
+
 
         if (voteReminderTask != null) {
             voteReminderTask.cancel();

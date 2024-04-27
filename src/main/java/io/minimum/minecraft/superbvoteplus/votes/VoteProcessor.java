@@ -8,7 +8,6 @@ import io.minimum.minecraft.superbvoteplus.storage.VoteStorage;
 import io.minimum.minecraft.superbvoteplus.util.PlayerVotes;
 import io.minimum.minecraft.superbvoteplus.votes.rewards.VoteReward;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -42,7 +41,7 @@ public class VoteProcessor implements Listener {
         SuperbVotePlus.getPlugin().getRecentVotesStorage().updateLastVote(vote.getUuid());
 
         Optional<Player> player = context.getPlayer().map(OfflinePlayer::getPlayer);
-        boolean hideBroadcast = player.isPresent() && player.get().hasPermission("superbvote.bypassbroadcast");
+        boolean hideBroadcast = player.isPresent() && player.get().hasPermission("superbvoteplus.bypassbroadcast");
 
         if (bestRewards.isEmpty()) {
             throw new RuntimeException("No vote rewards found for '" + vote + "'");
@@ -97,12 +96,12 @@ public class VoteProcessor implements Listener {
                 }
                 afterVoteProcessing();
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', SuperbVotePlus.getPlugin().getConfig().getString("reward-command.msg.no-rewards")));
+                player.sendMessage(SuperbVotePlus.getPlugin().getConfiguration().getLang().getNoRewards());
             }
 
             // Remind players to vote.
             if (SuperbVotePlus.getPlugin().getConfig().getBoolean("vote-reminder.on-join.enabled") &&
-                    player.hasPermission("superbvote.notify") &&
+                    player.hasPermission("superbvoteplus.notify") &&
                     !SuperbVotePlus.getPlugin().getVoteStorage().hasVotedToday(player.getUniqueId())) {
                 MessageContext context = new MessageContext(null, pv, voteStreak, player);
                 Bukkit.getScheduler().runTaskLater(

@@ -86,7 +86,7 @@ public class SuperbVoteListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (SuperbVotePlus.getPlugin().getConfiguration().isConfigurationError()) {
-            if (event.getPlayer().hasPermission("superbvote.admin")) {
+            if (event.getPlayer().hasPermission("superbvoteplus.admin")) {
                 Player player = event.getPlayer();
                 Bukkit.getScheduler().runTaskLater(SuperbVotePlus.getPlugin(), () -> BrokenNag.nag(player), 40);
             }

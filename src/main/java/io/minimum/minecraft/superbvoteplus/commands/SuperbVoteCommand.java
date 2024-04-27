@@ -36,25 +36,25 @@ public class SuperbVoteCommand implements TabExecutor {
                 ChatColor.GRAY + " SuperbVotePlus " +
                 ChatColor.DARK_GRAY.toString() + ChatColor.STRIKETHROUGH + "      ");
 
-        sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv votes [player]");
+        sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp votes [player]");
         sender.sendMessage(ChatColor.GRAY + "Checks your vote amount, or the specified player's.");
 
-        if (sender.hasPermission("superbvote.top") || sender.hasPermission("superbvote.admin")) {
-            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv top [page]");
+        if (sender.hasPermission("superbvoteplus.top") || sender.hasPermission("superbvoteplus.admin")) {
+            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp top [page]");
             sender.sendMessage(ChatColor.GRAY + "Shows the top players on the voting leaderboard.");
         }
 
-        if (sender.hasPermission("superbvote.admin")) {
-            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv fakevote <player> [service]");
+        if (sender.hasPermission("superbvoteplus.admin")) {
+            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp fakevote <player> [service]");
             sender.sendMessage(ChatColor.GRAY + "Issues a fake vote for the specified player.");
 
-            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv migrate <gal>");
+            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp migrate <gal>");
             sender.sendMessage(ChatColor.GRAY + "Migrate votes from another vote plugin.");
 
-            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv reload");
+            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp reload");
             sender.sendMessage(ChatColor.GRAY + "Reloads the plugin's configuration.");
 
-            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/sv clear");
+            sender.sendMessage(ChatColor.GRAY + ChatColor.BOLD.toString() + "/svp clear");
             sender.sendMessage(ChatColor.GRAY + "Clears all stored and queued votes.");
         }
     }
@@ -62,8 +62,8 @@ public class SuperbVoteCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (SuperbVotePlus.getPlugin().getConfiguration().isConfigurationError()) {
-            // Nag, except on /sv reload.
-            if (!sender.hasPermission("superbvote.admin") || !(args.length == 1 && args[0].equals("reload"))) {
+            // Nag, except on /svp reload.
+            if (!sender.hasPermission("superbvoteplus.admin") || !(args.length == 1 && args[0].equals("reload"))) {
                 BrokenNag.nag(sender);
                 return true;
             }
@@ -76,8 +76,8 @@ public class SuperbVoteCommand implements TabExecutor {
 
         switch (args[0]) {
             case "votes":
-                boolean canViewOthersVotes = sender.hasPermission("superbvote.admin") ||
-                        sender.hasPermission("superbvote.votes.others");
+                boolean canViewOthersVotes = sender.hasPermission("superbvoteplus.admin") ||
+                        sender.hasPermission("superbvoteplus.votes.others");
                 Bukkit.getScheduler().runTaskAsynchronously(SuperbVotePlus.getPlugin(), () -> {
                     UUID uuid;
                     String name;
@@ -98,7 +98,7 @@ public class SuperbVoteCommand implements TabExecutor {
                         name = args[1];
                     } else {
                         sender.sendMessage(ChatColor.RED + "Need to specify at most one argument.");
-                        sender.sendMessage(ChatColor.RED + "/sv votes [player]");
+                        sender.sendMessage(ChatColor.RED + "/svp votes [player]");
                         sender.sendMessage(ChatColor.RED + "Checks your vote amount, or the specified player's.");
                         return;
                     }
@@ -106,13 +106,13 @@ public class SuperbVoteCommand implements TabExecutor {
                 });
                 return true;
             case "top":
-                if (!(sender.hasPermission("superbvote.admin") || sender.hasPermission("superbvote.top"))) {
+                if (!(sender.hasPermission("superbvoteplus.admin") || sender.hasPermission("superbvoteplus.top"))) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
                 if (args.length > 2) {
                     sender.sendMessage(ChatColor.RED + "Need to specify at most one argument.");
-                    sender.sendMessage(ChatColor.RED + "/sv top [page]");
+                    sender.sendMessage(ChatColor.RED + "/svp top [page]");
                     sender.sendMessage(ChatColor.RED + "Shows the top players on the voting leaderboard.");
                     return true;
                 }
@@ -167,14 +167,14 @@ public class SuperbVoteCommand implements TabExecutor {
 
                 return true;
             case "fakevote":
-                if (!sender.hasPermission("superbvote.admin")) {
+                if (!sender.hasPermission("superbvoteplus.admin")) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
 
                 if (args.length != 3) {
                     sender.sendMessage(ChatColor.RED + "Need to specify two arguments.");
-                    sender.sendMessage(ChatColor.RED + "/sv fakevote <player> <service>");
+                    sender.sendMessage(ChatColor.RED + "/svp fakevote <player> <service>");
                     sender.sendMessage(ChatColor.RED + "Issues a fake vote for the specified player.");
                     return true;
                 }
@@ -196,7 +196,7 @@ public class SuperbVoteCommand implements TabExecutor {
                 sender.sendMessage(ChatColor.GREEN + "You have created a fake vote for " + player.getName() + ".");
                 break;
             case "reload":
-                if (!sender.hasPermission("superbvote.admin")) {
+                if (!sender.hasPermission("superbvoteplus.admin")) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
@@ -209,7 +209,7 @@ public class SuperbVoteCommand implements TabExecutor {
                 }
                 return true;
             case "clear":
-                if (!sender.hasPermission("superbvote.admin")) {
+                if (!sender.hasPermission("superbvoteplus.admin")) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
@@ -218,7 +218,7 @@ public class SuperbVoteCommand implements TabExecutor {
                 sender.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "DANGER DANGER DANGER DANGER DANGER DANGER");
                 sender.sendMessage("");
                 sender.sendMessage(ChatColor.RED + "This command will " + ChatColor.BOLD + "irreversibly" + ChatColor.RESET + ChatColor.RED + " clear all your server's votes!");
-                sender.sendMessage(ChatColor.RED + "If you want to continue, use the command /sv reallyclear in the next 15 seconds.");
+                sender.sendMessage(ChatColor.RED + "If you want to continue, use the command /svp reallyclear in the next 15 seconds.");
                 sender.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "You have been warned.");
                 sender.sendMessage("");
                 sender.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "DANGER DANGER DANGER DANGER DANGER DANGER");
@@ -230,7 +230,7 @@ public class SuperbVoteCommand implements TabExecutor {
 
                 return true;
             case "reallyclear":
-                if (!sender.hasPermission("superbvote.admin")) {
+                if (!sender.hasPermission("superbvoteplus.admin")) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
@@ -247,18 +247,18 @@ public class SuperbVoteCommand implements TabExecutor {
 
                     sender.sendMessage(ChatColor.GREEN + "All votes cleared from the database.");
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You took a wrong turn. Try again using /sv clear.");
+                    sender.sendMessage(ChatColor.RED + "You took a wrong turn. Try again using /svp clear.");
                 }
 
                 return true;
             case "migrate":
-                if (!sender.hasPermission("superbvote.admin")) {
+                if (!sender.hasPermission("superbvoteplus.admin")) {
                     sender.sendMessage(ChatColor.RED + "You can't do this.");
                     return true;
                 }
                 if (args.length != 2) {
                     sender.sendMessage(ChatColor.RED + "Need to specify an argument.");
-                    sender.sendMessage(ChatColor.RED + "/sv migrate <gal|svjson>");
+                    sender.sendMessage(ChatColor.RED + "/svp migrate <gal|svjson>");
                     sender.sendMessage(ChatColor.RED + "Migrate votes from another vote plugin.");
                     return true;
                 }
@@ -276,7 +276,7 @@ public class SuperbVoteCommand implements TabExecutor {
                 }
                 Bukkit.getScheduler().runTaskAsynchronously(SuperbVotePlus.getPlugin(), () -> {
                     if (SuperbVotePlus.getPlugin().getVoteStorage().getPagesAvailable(1) > 0) {
-                        sender.sendMessage(ChatColor.RED + "You already have votes in the database. Use /sv clear and try again.");
+                        sender.sendMessage(ChatColor.RED + "You already have votes in the database. Use /svp clear and try again.");
                         return;
                     }
                     try {
@@ -284,7 +284,7 @@ public class SuperbVoteCommand implements TabExecutor {
                         migration.execute(new ProgressListener() {
                             @Override
                             public void onStart(int records) {
-                                SuperbVotePlus.getPlugin().getLogger().info("Converting " + records + " records from " + migration.getName() + " to SuperbVote...");
+                                SuperbVotePlus.getPlugin().getLogger().info("Converting " + records + " records from " + migration.getName() + " to SuperbVotePlus...");
                             }
 
                             @Override
@@ -294,7 +294,7 @@ public class SuperbVoteCommand implements TabExecutor {
                                         .multiply(BigDecimal.valueOf(100))
                                         .setScale(1, BigDecimal.ROUND_HALF_UP)
                                         .toPlainString();
-                                SuperbVotePlus.getPlugin().getLogger().info("Converted " + num + " records to SuperbVote... (" + percentage + "% complete)");
+                                SuperbVotePlus.getPlugin().getLogger().info("Converted " + num + " records to SuperbVotePlus... (" + percentage + "% complete)");
                             }
 
                             @Override

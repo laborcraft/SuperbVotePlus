@@ -1,10 +1,11 @@
 package io.minimum.minecraft.superbvoteplus.configuration;
 
 import io.minimum.minecraft.superbvoteplus.commands.CommonCommand;
-import io.minimum.minecraft.superbvoteplus.commands.MessageCommand;
 import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessage;
 import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessages;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -16,17 +17,23 @@ public class LangConfiguration extends CustomConfigFile {
 
     private final TabExecutor voteCommand, voteStreakCommand;
     private final VoteMessage reminderMessage;
+    private final Component noRewards;
 
     public LangConfiguration(String fileName) throws IllegalArgumentException {
         super("lang/"+fileName+".yml");
 
-        voteCommand = new MessageCommand(
-                config.getString("commands.vote")
-        );
-        voteStreakCommand = new MessageCommand(
-                config.getString("commands.streak")
-        );
-        reminderMessage = VoteMessages.from(config, "messages.vote-reminder");
+        ConfigurationSection commandSection = config.getConfigurationSection("commands");
+        ConfigurationSection messagesSection = config.getConfigurationSection("messages");
+
+        VoteMessage voteMessage = VoteMessages.from(commandSection, "vote", false);
+        voteCommand = new CommonCommand(voteMessage, false);
+
+        VoteMessage voteStreakMessage = VoteMessages.from(commandSection, "streak", false);
+        voteStreakCommand = new CommonCommand(voteStreakMessage, false);
+
+        reminderMessage = VoteMessages.from(messagesSection, "vote-reminder");
+
+        noRewards = MiniMessage.miniMessage().deserialize(messagesSection.getString("no-rewards"));
     }
 
     public Map<String,String> getCommandNames(){
