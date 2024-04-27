@@ -8,7 +8,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.zaxxer.hikari.pool.HikariPool;
 import io.minimum.minecraft.superbvoteplus.SuperbVotePlus;
-import io.minimum.minecraft.superbvoteplus.configuration.StreaksConfiguration;
+import io.minimum.minecraft.superbvoteplus.configuration.MainConfiguration;
 import io.minimum.minecraft.superbvoteplus.util.PlayerVotes;
 import io.minimum.minecraft.superbvoteplus.votes.Vote;
 import io.minimum.minecraft.superbvoteplus.votes.VoteStreak;
@@ -78,7 +78,7 @@ public class MysqlVoteStorage implements ExtendedVoteStorage {
                     }
                 }
 
-                if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().isEnabled()) {
+                if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().enabled()) {
                     try (ResultSet t = connection.getMetaData().getTables(null, null, streaksTableName, null)) {
                         if (!t.next()) {
                             try (Statement statement = connection.createStatement()) {
@@ -132,7 +132,7 @@ public class MysqlVoteStorage implements ExtendedVoteStorage {
                 }
             }
 
-            if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().isEnabled()) {
+            if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().enabled()) {
                 VoteStreak currentStreak = getVoteStreak(vote.getUuid(), true);
                 if (currentStreak.getCount() == 0 && currentStreak.getDays() == 0) {
                     try (PreparedStatement statement = connection.prepareStatement("INSERT INTO " + streaksTableName + " (uuid, services) VALUES (?, JSON_SET('{}', ?, " +
@@ -368,8 +368,8 @@ public class MysqlVoteStorage implements ExtendedVoteStorage {
     @Override
     public VoteStreak getVoteStreak(UUID player, boolean required) {
         Preconditions.checkNotNull(player, "player");
-        StreaksConfiguration streaksConfiguration = SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration();
-        if (!streaksConfiguration.isEnabled() || (!required && !streaksConfiguration.isPlaceholdersEnabled())) {
+        MainConfiguration.StreaksConfiguration streaksConfiguration = SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration();
+        if (!streaksConfiguration.enabled() || (!required && !streaksConfiguration.placeholdersEnabled())) {
             return null;
         }
 

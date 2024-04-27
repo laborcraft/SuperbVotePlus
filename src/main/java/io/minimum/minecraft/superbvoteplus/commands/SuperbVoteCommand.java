@@ -2,7 +2,7 @@ package io.minimum.minecraft.superbvoteplus.commands;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 import io.minimum.minecraft.superbvoteplus.SuperbVotePlus;
-import io.minimum.minecraft.superbvoteplus.configuration.TextLeaderboardConfiguration;
+import io.minimum.minecraft.superbvoteplus.configuration.MainConfiguration;
 import io.minimum.minecraft.superbvoteplus.configuration.message.MessageContext;
 import io.minimum.minecraft.superbvoteplus.migration.GAListenerMigration;
 import io.minimum.minecraft.superbvoteplus.migration.Migration;
@@ -136,25 +136,25 @@ public class SuperbVoteCommand implements TabExecutor {
                     case "text":
                     default:
                         Bukkit.getScheduler().runTaskAsynchronously(SuperbVotePlus.getPlugin(), () -> {
-                            TextLeaderboardConfiguration config = SuperbVotePlus.getPlugin().getConfiguration().getTextLeaderboardConfiguration();
-                            int c = config.getPerPage();
+                            MainConfiguration.TextLeaderboardConfiguration config = SuperbVotePlus.getPlugin().getConfiguration().getTextLeaderboardConfiguration();
+                            int c = config.perPage();
                             int from = c * page;
                             List<PlayerVotes> leaderboard = SuperbVotePlus.getPlugin().getVoteStorage().getTopVoters(c, page);
                             if (leaderboard.isEmpty()) {
                                 sender.sendMessage(ChatColor.RED + "No entries found.");
                                 return;
                             }
-                            sender.sendMessage(config.getHeader().getBaseMessage());
+                            sender.sendMessage(config.header().getBaseMessage());
                             for (int i = 0; i < leaderboard.size(); i++) {
                                 String posStr = Integer.toString(from + i + 1);
                                 sender.sendMessage(config
-                                        .getEntryText()
+                                        .entryText()
                                         .getWithOfflinePlayer(sender, new MessageContext(null, leaderboard.get(i), null, null))
                                         .replaceAll("%num%", posStr));
                             }
                             int availablePages = SuperbVotePlus.getPlugin().getVoteStorage().getPagesAvailable(c);
                             sender.sendMessage(config
-                                    .getPageNumberText()
+                                    .pageNumberText()
                                     .getBaseMessage()
                                     .replaceAll("%page%", Integer.toString(page + 1))
                                     .replaceAll("%total%", Integer.toString(availablePages)));

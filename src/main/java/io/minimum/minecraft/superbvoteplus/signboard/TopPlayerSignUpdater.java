@@ -52,9 +52,9 @@ public class TopPlayerSignUpdater implements Runnable {
                         worldSign.setLine(i, "???");
                     }
                 } else {
-                    int lines = SuperbVotePlus.getPlugin().getConfiguration().getTopPlayerSignsConfiguration().getSignText().size();
+                    int lines = SuperbVotePlus.getPlugin().getConfiguration().getTopPlayerSignsConfiguration().signText().size();
                     for (int i = 0; i < Math.min(4, lines); i++) {
-                        PlainStringMessage m = SuperbVotePlus.getPlugin().getConfiguration().getTopPlayerSignsConfiguration().getSignText().get(i);
+                        PlainStringMessage m = SuperbVotePlus.getPlugin().getConfiguration().getTopPlayerSignsConfiguration().signText().get(i);
                         PlayerVotes pv = top.get(sign.getPosition() - 1);
                         worldSign.setLine(i, m.getWithOfflinePlayer(null,
                                 new MessageContext(null, pv, null, null)).replace("%num%", Integer.toString(sign.getPosition())));

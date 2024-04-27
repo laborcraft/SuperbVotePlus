@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.pool.HikariPool;
 import io.minimum.minecraft.superbvoteplus.SuperbVotePlus;
-import io.minimum.minecraft.superbvoteplus.configuration.message.OfflineVoteMessages;
-import io.minimum.minecraft.superbvoteplus.configuration.message.PlainStringMessage;
-import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessage;
-import io.minimum.minecraft.superbvoteplus.configuration.message.VoteMessages;
+import io.minimum.minecraft.superbvoteplus.configuration.message.*;
 import io.minimum.minecraft.superbvoteplus.storage.JsonVoteStorage;
 import io.minimum.minecraft.superbvoteplus.storage.MysqlVoteStorage;
 import io.minimum.minecraft.superbvoteplus.storage.VoteStorage;
@@ -217,4 +214,20 @@ public class MainConfiguration {
 
         return null;
     }
+
+    public record StreaksConfiguration(
+            boolean enabled,
+            boolean placeholdersEnabled,
+            boolean sharedCooldownPerService
+    ) {}
+    public record TopPlayerSignsConfiguration(
+            List<PlainStringMessage> signText
+    ) {}
+    public record TextLeaderboardConfiguration(
+            int perPage,
+            OfflineVoteMessage header,
+            OfflineVoteMessage entryText,
+            OfflineVoteMessage pageNumberText
+    ) {}
+
 }

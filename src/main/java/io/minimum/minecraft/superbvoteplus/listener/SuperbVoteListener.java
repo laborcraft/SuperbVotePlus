@@ -45,7 +45,7 @@ public class SuperbVoteListener implements Listener {
                     event.getVote().getAddress().equals(SuperbVoteCommand.FAKE_HOST_NAME_FOR_VOTE), worldName, new Date());
 
             if (!vote.isFakeVote()) {
-                if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().isSharedCooldownPerService()) {
+                if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().sharedCooldownPerService()) {
                     if (voteStreak == null) {
                         // becomes a required value
                         voteStreak = voteStorage.getVoteStreakIfSupported(op.getUniqueId(), true);

@@ -19,7 +19,7 @@ public class VoteReminder implements Runnable {
         List<UUID> onlinePlayers = Bukkit.getOnlinePlayers().stream().filter(p -> p.hasPermission("superbvote.notify")).map(Player::getUniqueId).collect(Collectors.toList());
 
         VoteStorage voteStorage = SuperbVotePlus.getPlugin().getVoteStorage();
-        if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().isPlaceholdersEnabled() && voteStorage instanceof ExtendedVoteStorage) {
+        if (SuperbVotePlus.getPlugin().getConfiguration().getStreaksConfiguration().placeholdersEnabled() && voteStorage instanceof ExtendedVoteStorage) {
             List<Map.Entry<PlayerVotes, VoteStreak>> noVotes = ((ExtendedVoteStorage) voteStorage).getAllPlayersAndStreaksWithNoVotesToday(onlinePlayers);
             for (Map.Entry<PlayerVotes, VoteStreak> entry : noVotes) {
                 PlayerVotes pv = entry.getKey();
