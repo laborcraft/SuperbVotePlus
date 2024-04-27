@@ -1,6 +1,6 @@
 name: SuperbVotePlus
 main: io.minimum.minecraft.superbvote.SuperbVotePlus
-author: [tuxed, Tig3r98]
+authors: [tuxed, Tig3r98]
 version: ${project.version}
 depend: [Votifier]
 softdepend: [Vault, PlaceholderAPI]
