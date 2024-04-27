@@ -6,7 +6,7 @@
 
     <groupId>io.minimum.minecraft</groupId>
     <artifactId>SuperbVotePlus</artifactId>
-    <version>0.5.5</version>
+    <version>0.6.0</version>
 
     <build>
         <resources>
