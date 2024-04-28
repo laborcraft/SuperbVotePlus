@@ -76,7 +76,7 @@ public class VoteProcessor implements Listener {
      * @param player
      * @param tellNoMessages if we should tell the player he has no messages. Used for commands.
      */
-    public void reward(Player player, boolean tellNoMessages){
+    public void reward(Player player, boolean tellNoMessages){ //todo unused arg
         Bukkit.getScheduler().runTaskAsynchronously(SuperbVotePlus.getPlugin(), () -> {
             // Update names in MySQL, if it is being used.
             if (SuperbVotePlus.getPlugin().getVoteStorage() instanceof MysqlVoteStorage) {

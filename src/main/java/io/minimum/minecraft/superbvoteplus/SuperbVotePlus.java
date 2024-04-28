@@ -3,6 +3,7 @@ package io.minimum.minecraft.superbvoteplus;
 import io.minimum.minecraft.superbvoteplus.commands.RewardCommand;
 import io.minimum.minecraft.superbvoteplus.commands.SuperbVoteCommand;
 import io.minimum.minecraft.superbvoteplus.configuration.MainConfiguration;
+import io.minimum.minecraft.superbvoteplus.listener.RedisListener;
 import io.minimum.minecraft.superbvoteplus.scoreboard.ScoreboardHandler;
 import io.minimum.minecraft.superbvoteplus.signboard.TopPlayerSignFetcher;
 import io.minimum.minecraft.superbvoteplus.signboard.TopPlayerSignListener;
@@ -92,6 +93,10 @@ public class SuperbVotePlus extends JavaPlugin {
         SpigotUpdater updater = new SpigotUpdater();
         getServer().getScheduler().runTaskAsynchronously(this, updater);
         getServer().getPluginManager().registerEvents(updater, this);
+
+        // register ForestRedisAPI bridge
+        if(Bukkit.getPluginManager().isPluginEnabled("ForestRedisAPI"))
+            getServer().getPluginManager().registerEvents(new RedisListener(), this);
     }
 
     @Override

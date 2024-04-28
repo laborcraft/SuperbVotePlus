@@ -32,18 +32,12 @@ import java.util.stream.Collectors;
 public class MainConfiguration {
     @Getter(AccessLevel.NONE)
     private final ConfigurationSection configuration;
-
     private LangConfiguration lang;
-
     private final List<VoteReward> rewards = new ArrayList<>();
-
     private final TextLeaderboardConfiguration textLeaderboardConfiguration;
     private final TopPlayerSignsConfiguration topPlayerSignsConfiguration;
-
     private final StreaksConfiguration streaksConfiguration;
-
     private boolean configurationError = false;
-
     private static final List<String> SUPPORTED_STORAGE = ImmutableList.of("json", "mysql");
 
     public MainConfiguration(ConfigurationSection section) {

@@ -7,10 +7,14 @@ authors: [tuxed, Tig3r98]
 dependencies:
   server:
     Votifier:
-      load: AFTER
+      load: BEFORE
       required: true
       join-classpath: true
     PlaceholderAPI:
-      load: AFTER
+      load: BEFORE
+      required: false
+      join-classpath: true
+    ForestRedisAPI:
+      load: BEFORE
       required: false
       join-classpath: true
