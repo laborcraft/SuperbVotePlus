@@ -1,0 +1,5 @@
+Upname: SuperbVotePlus
+authors: [tuxed, Tig3r98]
+version: ${project.version}
+main: io.minimum.minecraft.superbvoteplus.proxy.bungee.SuperbVotePlus
+depends: [NuVotifier, ForestRedisAPI]
